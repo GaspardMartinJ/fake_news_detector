@@ -1,0 +1,72 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'fake_news_detector/style.css' %}">
+<h2>Fake News Detector</h2>
+<form action="/index/" method="post">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Submit">
+</form>
+
+<div>
+  {% if checkCSV %}
+    Ce lien figure dans une base de données de fake news connues.
+  {% elif checkCSV == False %}
+    Ce lien ne figure pas dans une base de données de fake news connues.
+  {% endif %}
+</div>
+<br>
+
+<div>
+  {% if checkScrape == "not found" %}
+    Pas de texte à analyser trouvé dans ce lien.
+  {% elif checkScrape %}
+    Cet article est écrit de manière professionnelle.
+  {% elif checkScrape == False %}
+    Cet article n'est pas écrit de manière professionnelle.
+  {% endif %}
+</div>
+<br>
+
+<div>
+  {% if numbers %}
+    {% if numbers.1 == 1 %}
+      {{ numbers.1 }} post mentionnant ce lien utilise un hashtag #fakenews ou #infox sur {{ numbers.0 }} en tout
+    {% elif numbers.1 != 0 %}
+      {{ numbers.1 }} posts mentionnant ce lien utilisent un hashtag #fakenews ou #infox sur {{ numbers.0 }} en tout
+    {% elif numbers.0 == 1 %}
+      {{ numbers.0 }} tweet mentionne ce lien sans utiliser de hashtag #fakenews ou #infox
+    {% elif numbers.0 != 0 %}
+      {{ numbers.0 }} tweets mentionnent ce lien sans utiliser de hashtag #fakenews ou #infox
+    {% elif numbers.0 == 0 %}
+      Il n'y a aucun tweet mentionnant ce lien
+    {% endif %}
+  {% endif %}
+</div>
+<br>
+<div>
+  {% if reddit %}
+    Ce lien est mentionné sur le subreddit "fakenews".
+  {% elif reddit is not None %}
+    Ce lien n'est pas mentionné sur le subreddit "fakenews".
+  {% endif %}
+</div>
+<br>
+
+<div>
+  {% for id in tweets %}
+    {% if forloop.counter <= 10 %}
+      <blockquote class="twitter-tweet" data-cards="hidden" data-conversation="none">
+        <a href="https://twitter.com/anyuser/status/{{ id }}"></a>
+      </blockquote> 
+      <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+      <br>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div>
+  {% for link in reddit %}
+    {{ link | safe }}
+  {% endfor %}
+</div>
