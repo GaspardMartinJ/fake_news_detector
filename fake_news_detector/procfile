@@ -1,1 +1,1 @@
-web: gunicorn myproject.wsgi
+web: gunicorn fake_news_detector.wsgi
