@@ -1,1 +1,1 @@
-web: gunicorn fake-news-detector-site.wsgi
+web: python manage.py runserver
